@@ -233,5 +233,5 @@ fabric.properties
 .idea/caches/build_file_checksums.ser
 
 # Project-specific
-client_secrets.json
-credentials.json
+resources/client_secrets.json
+resources/credentials.json
