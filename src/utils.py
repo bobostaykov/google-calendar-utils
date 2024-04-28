@@ -3,7 +3,7 @@ from datetime import datetime
 
 from googleapiclient.discovery import build
 
-from src.constants import DATETIME_FORMAT
+from constants import DATETIME_FORMAT
 
 
 def get_all_calendars(credentials):

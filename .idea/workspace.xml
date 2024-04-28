@@ -4,10 +4,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="60ba9a4b-d60f-4114-b4ab-a8bdef0ff8ce" name="Changes" comment="Feature: calculate total duration for events">
+    <list default="true" id="60ba9a4b-d60f-4114-b4ab-a8bdef0ff8ce" name="Changes" comment="Feature: switch two days">
+      <change afterPath="$PROJECT_DIR$/src/__init__.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/features.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/features.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/utils.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -113,7 +116,6 @@
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
       <changelist id="60ba9a4b-d60f-4114-b4ab-a8bdef0ff8ce" name="Changes" comment="" />
-      <changelist id="" name="Switch days" comment="" />
       <created>1713947107503</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
@@ -199,7 +201,15 @@
       <option name="project" value="LOCAL" />
       <updated>1714312503052</updated>
     </task>
-    <option name="localTasksCounter" value="11" />
+    <task id="LOCAL-00011" summary="Feature: switch two days">
+      <option name="closed" value="true" />
+      <created>1714314489953</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1714314489954</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -218,11 +228,11 @@
     <MESSAGE value="Add README.md" />
     <MESSAGE value="Configure authentication" />
     <MESSAGE value="Switch days" />
-    <MESSAGE value="Feature: switch two days" />
     <MESSAGE value="to amend" />
     <MESSAGE value="New changelist" />
     <MESSAGE value="Feature: calculate total duration for events" />
-    <option name="LAST_COMMIT_MESSAGE" value="Feature: calculate total duration for events" />
+    <MESSAGE value="Feature: switch two days" />
+    <option name="LAST_COMMIT_MESSAGE" value="Feature: switch two days" />
     <option name="MAKE_NEW_CHANGELIST_ACTIVE" value="true" />
   </component>
 </project>

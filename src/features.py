@@ -3,8 +3,8 @@ from datetime import date, timedelta, datetime, timezone
 
 from googleapiclient.discovery import build
 
-from src.constants import PRIMARY, DATETIME_FORMAT, ALL_CALENDARS
-from src.utils import get_event_duration
+from constants import PRIMARY, DATETIME_FORMAT, ALL_CALENDARS
+from utils import get_event_duration
 
 
 def get_total_duration(credentials,

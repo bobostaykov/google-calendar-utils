@@ -6,9 +6,9 @@ from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
 
-from src.constants import CREDENTIALS_FILE, SCOPES, CLIENT_SECRETS_FILE, ALL_CALENDARS, PRIMARY
-from src.features import get_total_duration, switch_two_days
-from src.utils import get_all_calendars
+from constants import CREDENTIALS_FILE, SCOPES, CLIENT_SECRETS_FILE, ALL_CALENDARS, PRIMARY
+from features import get_total_duration, switch_two_days
+from utils import get_all_calendars
 
 
 @Gooey(program_name='Google Calendar Utils', default_size=(800, 700), tabbed_groups=True)
