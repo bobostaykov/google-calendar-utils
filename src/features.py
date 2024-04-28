@@ -115,3 +115,74 @@ def filter_by_start_time(events, min_time_str, max_time_str):
     max_time = datetime.strptime(max_time_str, DATETIME_FORMAT)
     return [event for event in events if
             min_time <= datetime.strptime(event['start']['dateTime'], DATETIME_FORMAT) <= max_time]
+
+
+def switch_two_days(credentials, first_date_str, second_date_str, min_start_time, max_start_time, calendars):
+    """ Moves the events of the first date to the second one and vice versa """
+
+    if min_start_time is None:
+        min_start_time = '00:00:00'
+    if max_start_time is None:
+        max_start_time = '23:59:59'
+
+    time_zone = datetime.now(timezone.utc).astimezone().strftime('%z')
+    first_date = date.today() if first_date_str is None else datetime.strptime(first_date_str, '%Y-%m-%d')
+    first_date_min = first_date.strftime(f'%Y-%m-%dT{min_start_time}{time_zone}')
+    first_date_max = first_date.strftime(f'%Y-%m-%dT{max_start_time}{time_zone}')
+    second_date = date.today() if second_date_str is None else datetime.strptime(second_date_str, '%Y-%m-%d')
+    second_date_min = second_date.strftime(f'%Y-%m-%dT{min_start_time}{time_zone}')
+    second_date_max = second_date.strftime(f'%Y-%m-%dT{max_start_time}{time_zone}')
+    first_date_events = []
+    second_date_events = []
+
+    with build('calendar', 'v3', credentials=credentials) as service:
+        for calendar in calendars:
+            first_date_events_for_calendar = service.events().list(
+                calendarId=calendar['id'],
+                timeMin=first_date_min,
+                timeMax=first_date_max,
+                singleEvents=True,
+            ).execute()
+            filtered = filter_by_start_time(first_date_events_for_calendar['items'], first_date_min, first_date_max)
+            first_date_events.extend(filtered)
+            second_date_events_for_calendar = service.events().list(
+                calendarId=calendar['id'],
+                timeMin=second_date_min,
+                timeMax=second_date_max,
+                singleEvents=True,
+            ).execute()
+            filtered = filter_by_start_time(second_date_events_for_calendar['items'], second_date_min, second_date_max)
+            second_date_events.extend(filtered)
+
+        move_events(first_date_events, second_date, service)
+        move_events(second_date_events, first_date, service)
+
+    print('Done!\n')
+
+
+def move_events(events, new_date, service):
+    """ Move the given events to the given date, preserving all other fields """
+
+    for event in events:
+        if 'dateTime' not in event['start']:
+            # Skip all-day events
+            continue
+        old_start = datetime.strptime(event['start']['dateTime'], DATETIME_FORMAT)
+        old_end = datetime.strptime(event['end']['dateTime'], DATETIME_FORMAT)
+        new_start = old_start.replace(year=new_date.year, month=new_date.month, day=new_date.day)
+        new_end = old_end.replace(year=new_date.year, month=new_date.month, day=new_date.day)
+        if (old_end.date() - old_start.date()).days == 1:
+            # The end of the event is on the next day, should increment new_end too
+            new_end = new_end + timedelta(days=1)
+        body = {
+            **event,
+            'start': {
+                'dateTime': new_start.strftime(DATETIME_FORMAT),
+                'timeZone': event['start']['timeZone'],
+            },
+            'end': {
+                'dateTime': new_end.strftime(DATETIME_FORMAT),
+                'timeZone': event['end']['timeZone'],
+            },
+        }
+        service.events().update(calendarId=event['organizer']['email'], eventId=event['id'], body=body).execute()

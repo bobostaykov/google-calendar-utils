@@ -7,11 +7,11 @@ from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
 
 from src.constants import CREDENTIALS_FILE, SCOPES, CLIENT_SECRETS_FILE, ALL_CALENDARS, PRIMARY
-from src.features import get_total_duration
+from src.features import get_total_duration, switch_two_days
 from src.utils import get_all_calendars
 
 
-@Gooey(program_name='Google Calendar Utils')
+@Gooey(program_name='Google Calendar Utils', default_size=(800, 700), tabbed_groups=True)
 def main():
     load_dotenv()
     credentials = authenticate()
@@ -36,16 +36,34 @@ def main():
                                         help='  Title contains search term (whole words) or is exact match',
                                         widget='CheckBox', action='store_true')
 
+    switch_days_arg_group = arg_parser.add_argument_group('Switch two days',
+                                                          description='Moves the events of the first date to the second one and vice versa.')
+    switch_days_arg_group.add_argument('--first_date', help='If left empty, today is chosen', widget='DateChooser')
+    switch_days_arg_group.add_argument('--second_date', help='If left empty, today is chosen', widget='DateChooser')
+    switch_days_arg_group.add_argument('--min_start_time',
+                                       help='Set time frame for the events to be moved. If left empty, 00:00:00 will be set',
+                                       widget='TimeChooser')
+    switch_days_arg_group.add_argument('--max_start_time',
+                                       help='Set time frame for the events to be moved. If left empty, 23:59:59 will be set',
+                                       widget='TimeChooser')
+
     args = arg_parser.parse_args()
 
-    get_total_duration(credentials,
-                       args.min_date,
-                       args.max_date,
-                       args.calendar,
-                       args.event_titles,
-                       args.title_contains,
-                       args.show_events,
-                       calendars)
+    if args.min_date or args.max_date or (args.calendar and args.calendar != ALL_CALENDARS) or args.event_titles or \
+            args.title_contains or args.show_events:
+        get_total_duration(credentials,
+                           args.min_date,
+                           args.max_date,
+                           args.calendar,
+                           args.event_titles,
+                           args.title_contains,
+                           args.show_events,
+                           calendars)
+    elif args.first_date or args.second_date or args.min_start_time or args.max_start_time:
+        switch_two_days(credentials, args.first_date, args.second_date, args.min_start_time, args.max_start_time,
+                        calendars)
+    else:
+        raise Exception('Please choose at least one option.')
 
 
 def authenticate():
