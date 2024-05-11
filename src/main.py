@@ -11,7 +11,8 @@ from features import get_total_duration, switch_two_days
 from utils import get_all_calendars
 
 
-@Gooey(program_name='Google Calendar Utils', default_size=(800, 700), tabbed_groups=True)
+@Gooey(program_name='Google Calendar Utils', default_size=(800, 700), tabbed_groups=True, show_success_modal=False,
+       show_failure_modal=False)
 def main():
     load_dotenv()
     credentials = authenticate()
