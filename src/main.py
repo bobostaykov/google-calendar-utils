@@ -2,6 +2,7 @@ import os
 
 from dotenv import load_dotenv
 from gooey import GooeyParser, Gooey
+from google.auth.exceptions import RefreshError
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
@@ -74,9 +75,15 @@ def authenticate():
     if os.path.exists(CREDENTIALS_FILE):
         credentials = Credentials.from_authorized_user_file(CREDENTIALS_FILE, SCOPES)
     if not credentials or not credentials.valid:
+        login = False
         if credentials and credentials.expired and credentials.refresh_token:
-            credentials.refresh(Request())
+            try:
+                credentials.refresh(Request())
+            except RefreshError:
+                login = True
         else:
+            login = True
+        if login:
             flow = InstalledAppFlow.from_client_secrets_file(CLIENT_SECRETS_FILE, SCOPES)
             credentials = flow.run_local_server()
         with open(CREDENTIALS_FILE, 'w') as credentials_file:
