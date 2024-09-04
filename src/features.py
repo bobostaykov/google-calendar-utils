@@ -21,7 +21,8 @@ def get_total_duration(credentials,
     - if neither min_date nor max_date are specified, the current week is taken
     - if event title is not specified, all events in the given calendar are selected
     - if calendar ID is not specified, events from all calendars are selected
-    - title_contains == False means the title should be an exact match """
+    - title_contains == False means the title should be an exact match
+    - ignores all-day events """
 
     if min_date_str is None and max_date_str is None:
         today = date.today()
@@ -62,7 +63,8 @@ def get_total_duration(credentials,
                     singleEvents=True,
                     q=title,
                 ).execute()
-                filtered = filter_by_title(events_for_calendar['items'], title, title_contains)
+                filtered = filter_out_all_day_events(events_for_calendar['items'])
+                filtered = filter_by_title(filtered, title, title_contains)
                 filtered = filter_by_start_time(filtered, min_datetime, max_datetime)
                 events.extend(filtered)
 
@@ -93,6 +95,12 @@ def get_total_duration(credentials,
                 print(f'{event["summary"]}: from {start_formatted} to {end_formatted}')
     # Empty line for readability
     print()
+
+
+def filter_out_all_day_events(events):
+    """ Remove all-day events from the list """
+
+    return [event for event in events if 'dateTime' in event['start'] and 'dateTime' in event['end']]
 
 
 def filter_by_title(events, title, title_contains):
@@ -143,7 +151,8 @@ def switch_two_days(credentials, first_date_str, second_date_str, min_start_time
                 timeMax=first_date_max,
                 singleEvents=True,
             ).execute()
-            filtered = filter_by_start_time(first_date_events_for_calendar['items'], first_date_min, first_date_max)
+            filtered = filter_out_all_day_events(first_date_events_for_calendar['items'])
+            filtered = filter_by_start_time(filtered, first_date_min, first_date_max)
             first_date_events.extend(filtered)
             second_date_events_for_calendar = service.events().list(
                 calendarId=calendar['id'],
@@ -151,7 +160,8 @@ def switch_two_days(credentials, first_date_str, second_date_str, min_start_time
                 timeMax=second_date_max,
                 singleEvents=True,
             ).execute()
-            filtered = filter_by_start_time(second_date_events_for_calendar['items'], second_date_min, second_date_max)
+            filtered = filter_out_all_day_events(second_date_events_for_calendar['items'])
+            filtered = filter_by_start_time(filtered, second_date_min, second_date_max)
             second_date_events.extend(filtered)
 
         move_events(first_date_events, second_date, service)
