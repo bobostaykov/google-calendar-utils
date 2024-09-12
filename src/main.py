@@ -85,7 +85,7 @@ def authenticate():
             login = True
         if login:
             flow = InstalledAppFlow.from_client_secrets_file(CLIENT_SECRETS_FILE, SCOPES)
-            credentials = flow.run_local_server()
+            credentials = flow.run_local_server(port=8090)
         with open(CREDENTIALS_FILE, 'w') as credentials_file:
             credentials_file.write(credentials.to_json())
     return credentials
